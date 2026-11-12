@@ -1,0 +1,4 @@
+# Copie para terraform.tfvars e ajuste. O arquivo terraform.tfvars não vai para o Git.
+aws_region       = "us-east-1"
+allowed_ssh_cidr = "203.0.113.10/32" # troque pelo seu IP
+# key_name       = "meu-key-pair"
