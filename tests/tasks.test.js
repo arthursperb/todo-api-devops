@@ -91,4 +91,13 @@ describe('API de tarefas', () => {
     const res = await request(app).get('/nada');
     expect(res.status).toBe(404);
   });
+
+  test('log de requisições registra método, rota e status', async () => {
+    const spy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    const appWithLog = createApp({ log: true });
+    await request(appWithLog).get('/health');
+    const entry = JSON.parse(spy.mock.calls[0][0]);
+    spy.mockRestore();
+    expect(entry).toMatchObject({ method: 'GET', url: '/health', status: 200 });
+  });
 });

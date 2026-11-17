@@ -2,9 +2,27 @@
 
 const express = require('express');
 
-function createApp() {
+function createApp({ log = process.env.NODE_ENV !== 'test' } = {}) {
   const app = express();
   app.use(express.json());
+
+  // Log de cada requisição em JSON (aparece em "docker logs"). Desligado nos testes.
+  if (log) {
+    app.use((req, res, next) => {
+      const start = Date.now();
+      res.on('finish', () => {
+        console.log(
+          JSON.stringify({
+            method: req.method,
+            url: req.originalUrl,
+            status: res.statusCode,
+            ms: Date.now() - start,
+          })
+        );
+      });
+      next();
+    });
+  }
 
   // "Banco de dados" em memória: suficiente para o foco do projeto (DevOps).
   const tasks = new Map();

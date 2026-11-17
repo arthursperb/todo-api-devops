@@ -1,0 +1,17 @@
+# Sobe a API com um comando: docker compose up -d --build
+services:
+  api:
+    image: ${IMAGE:-ghcr.io/arthursperb/todo-api-devops:latest}
+    build: .
+    container_name: todo-api
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: "3000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s

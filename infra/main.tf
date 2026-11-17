@@ -58,10 +58,12 @@ resource "aws_instance" "app" {
   key_name               = var.key_name
   vpc_security_group_ids = [aws_security_group.app.id]
 
-  # Prepara o servidor com Node.js e Git. O deploy da aplicação fica para a Fase 2 (CD).
+  # Prepara o servidor com Docker e Git. O deploy da aplicação é feito pelo pipeline (job "deploy").
   user_data = <<-EOF
     #!/bin/bash
-    dnf install -y nodejs20 git
+    dnf install -y docker git
+    systemctl enable --now docker
+    usermod -aG docker ec2-user
   EOF
 
   metadata_options {
